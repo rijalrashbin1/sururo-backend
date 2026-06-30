@@ -238,6 +238,22 @@ app.post('/api/orders', async (req, res) => {
   }
 });
 
+// Get orders by email (for My Orders page) -- must be registered BEFORE /api/orders/:orderNumber
+app.get('/api/orders/by-email', async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ error: 'Email required' });
+    const result = await pool.query(
+      'SELECT * FROM orders WHERE customer_email = $1 ORDER BY created_at DESC',
+      [email]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
+
 app.get('/api/orders/:orderNumber', async (req, res) => {
   try {
     const { orderNumber } = req.params;
@@ -452,22 +468,6 @@ app.post('/api/admin/orders', async (req, res) => {
   }
 });
 
-app.get('/api/orders/by-email', async (req, res) => {
-  try {
-    const { email } = req.query;
-    if (!email) return res.status(400).json({ error: 'Email is required' });
-
-    const result = await pool.query(
-      'SELECT * FROM orders WHERE customer_email = $1 ORDER BY created_at DESC',
-      [email]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to fetch orders' });
-  }
-});
-
 app.get('/api/admin/orders', adminAuth, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 100');
@@ -517,22 +517,6 @@ app.delete('/api/admin/orders/:id', adminAuth, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete order' });
   }
 });
-// Get orders by email (for My Orders page)
-app.get('/api/orders/by-email', async (req, res) => {
-  try {
-    const { email } = req.query;
-    if (!email) return res.status(400).json({ error: 'Email required' });
-    const result = await pool.query(
-      'SELECT * FROM orders WHERE customer_email = $1 ORDER BY created_at DESC',
-      [email]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to fetch orders' });
-  }
-});
-
 // ==================== ERROR HANDLER ====================
 app.use((err, req, res, next) => {
   console.error('Express error:', err.message);
