@@ -437,10 +437,12 @@ app.post('/api/admin/orders', async (req, res) => {
   try {
     const { customer_name, customer_email, phone, items, total_amount, shipping_data } = req.body;
 
+    const order_number = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
     const result = await pool.query(
-      `INSERT INTO orders (customer_name, customer_email, phone, items, total_amount, shipping_data, status)
-       VALUES ($1, $2, $3, $4, $5, $6, 'pending') RETURNING *`,
-      [customer_name, customer_email, phone, JSON.stringify(items), total_amount, JSON.stringify(shipping_data)]
+      `INSERT INTO orders (order_number, customer_name, customer_email, phone, items, total_amount, shipping_data, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending') RETURNING *`,
+      [order_number, customer_name, customer_email, phone, JSON.stringify(items), total_amount, JSON.stringify(shipping_data)]
     );
 
     res.status(201).json({ message: 'Order placed', data: result.rows[0] });
