@@ -452,6 +452,22 @@ app.post('/api/admin/orders', async (req, res) => {
   }
 });
 
+app.get('/api/orders/by-email', async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ error: 'Email is required' });
+
+    const result = await pool.query(
+      'SELECT * FROM orders WHERE customer_email = $1 ORDER BY created_at DESC',
+      [email]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
+
 app.get('/api/admin/orders', adminAuth, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 100');
