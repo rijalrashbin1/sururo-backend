@@ -511,7 +511,6 @@ app.get('/api/orders/by-email', async (req, res) => {
 });
 
 // ==================== START SERVER ====================
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Sururo backend running on port ${PORT}`);
 });
