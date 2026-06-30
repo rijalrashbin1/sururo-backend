@@ -48,7 +48,10 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD || 'password',
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'sururo_db'
+  database: process.env.DB_NAME || 'sururo_db',
+  ssl: process.env.DB_HOST && process.env.DB_HOST.includes('supabase')
+    ? { rejectUnauthorized: false }
+    : false
 });
 
 // Helper functions
