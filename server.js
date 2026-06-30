@@ -357,12 +357,6 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Sururo Nepal Crafts API is running' });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Sururo backend running on port ${PORT}`);
-});
-
 module.exports = app;
 
 // ==================== CONTACT MESSAGES ====================
