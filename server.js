@@ -275,10 +275,21 @@ const adminAuth = (req, res, next) => {
   }
 };
 
-app.post("/api/admin/upload", adminAuth, upload.single("image"), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-  const imageUrl = req.file.path;
-  res.json({ image_url: imageUrl });
+app.post("/api/admin/upload", adminAuth, (req, res, next) => {
+  upload.single("image")(req, res, (err) => {
+    if (err) {
+      console.log('Upload error message:', err.message);
+      console.log('Upload error stack:', err.stack);
+      return res.status(400).json({ error: err.message || "File upload failed" });
+    }
+    
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    
+    const imageUrl = req.file.path;
+    res.json({ image_url: imageUrl });
+  });
 });
 
 app.post('/api/admin/products', adminAuth, async (req, res) => {
@@ -502,6 +513,12 @@ app.get('/api/orders/by-email', async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch orders' });
   }
+});
+
+// ==================== ERROR HANDLER ====================
+app.use((err, req, res, next) => {
+  console.error('Express error:', err.message);
+  res.status(500).json({ error: err.message || 'Internal server error' });
 });
 
 // ==================== START SERVER ====================
