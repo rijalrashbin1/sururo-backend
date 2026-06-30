@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sururo Admin - Product & Message Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #8B1C1C 0%, #A62C2C 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            background: #FFD700;
+            color: #8B1C1C;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #FFC700;
+            transform: translateY(-2px);
+        }
+
+        /* LOGIN FORM */
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 100px auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .login-form h2 {
+            color: #8B1C1C;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8B1C1C;
+            box-shadow: 0 0 5px rgba(139, 28, 28, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #8B1C1C;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #A62C2C;
+            transform: translateY(-2px);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: #8B1C1C;
+        }
+
+        .tab-btn.active {
+            color: #8B1C1C;
+            border-bottom-color: #8B1C1C;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            background: #8B1C1C;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #A62C2C;
+            transform: translateY(-2px);
+        }
+
+        /* TABLES */
+        .table-wrapper {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background: #8B1C1C;
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .table-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #FFD700;
+            color: #333;
+        }
+
+        .btn-edit:hover {
+            background: #FFC700;
+        }
+
+        .btn-delete {
+            background: #E74C3C;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #C0392B;
+        }
+
+        .btn-complete {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-complete:hover {
+            background: #219a52;
+        }
+
+        .badge-unread {
+            background: #E74C3C;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .badge-read {
+            background: #95a5a6;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #8B1C1C;
+            font-size: 22px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8B1C1C;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #8B1C1C;
+        }
+
+        .label-hint {
+            font-weight: 400;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .upload-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            min-width: 0;
+        }
+
+        .file-picker {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1.5px dashed #ccc;
+            border-radius: 5px;
+            padding: 10px 12px;
+            background: #fafafa;
+        }
+
+        .choose-file-btn {
+            background: white;
+            color: #333;
+            border: 1px solid #bbb;
+            padding: 7px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .choose-file-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .file-name-display {
+            font-size: 13px;
+            color: #999;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .upload-btn {
+            background: #8B1C1C;
+            color: white;
+            border: none;
+            flex-shrink: 0;
+            padding: 0 22px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .upload-btn:hover {
+            background: #A62C2C;
+        }
+
+        .upload-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .upload-status {
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .image-preview {
+            margin-top: 10px;
+            max-width: 220px;
+            min-height: 1px;
+        }
+
+        .image-preview img {
+            display: block;
+            width: 100%;
+            max-width: 220px;
+            height: auto;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .image-preview .preview-error {
+            font-size: 12px;
+            color: #e74c3c;
+            margin-top: 4px;
+        }
+
+        .remove-image-btn {
+            margin-top: 8px;
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .remove-image-btn:hover {
+            text-decoration: underline;
+        }
+
+
+        .submit-btn {
+            width: 100%;
+            background: #8B1C1C;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: #A62C2C;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* MESSAGES */
+        .message {
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.active {
+            display: block;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message-detail {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .message-detail h4 {
+            color: #8B1C1C;
+            margin-bottom: 10px;
+        }
+
+        .message-detail p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #8B1C1C;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .admin-header h1 {
+                font-size: 24px;
+            }
+
+            .dashboard-tabs {
+                flex-wrap: wrap;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table th, table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- LOGIN FORM -->
+        <div id="loginSection" class="login-section">
+            <form id="loginForm" class="login-form">
+                <h2>Sururo Admin</h2>
+                <div class="message" id="loginMessage"></div>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="admin@sururo.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">Login</button>
+            </form>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="dashboard">
+            <div class="admin-header">
+                <h1>Sururo Admin Dashboard</h1>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
+
+            <div class="message" id="dashMessage"></div>
+
+            <!-- TABS -->
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" data-tab="products">📦 Products</button>
+                <button class="tab-btn" data-tab="messages">💬 Messages</button>
+                <button class="tab-btn" data-tab="orders">📋 Orders</button>
+            </div>
+
+            <!-- PRODUCTS TAB -->
+            <div id="products" class="tab-content active">
+                <div class="dashboard-actions">
+                    <button class="btn-primary" id="addProductBtn">➕ Add New Product</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <div id="productsLoading" class="loading" style="display:none;">
+                        <div class="spinner"></div>
+                        Loading products...
+                    </div>
+                    <table id="productsTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MESSAGES TAB -->
+            <div id="messages" class="tab-content">
+                <div class="table-wrapper">
+                    <div id="messagesLoading" class="loading" style="display:none;">
+                        <div class="spinner"></div>
+                        Loading messages...
+                    </div>
+                    <table id="messagesTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>Email</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messagesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ORDERS TAB -->
+            <div id="orders" class="tab-content">
+                <div class="table-wrapper">
+                    <div id="ordersLoading" class="loading" style="display:none;">
+                        <div class="spinner"></div>
+                        Loading orders...
+                    </div>
+                    <table id="ordersTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT FORM MODAL -->
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Product</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+
+            <form id="productForm">
+                <div class="message" id="formMessage"></div>
+
+                <div class="form-group">
+                    <label>Product Name *</label>
+                    <input type="text" id="productName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="productDescription" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="productCategory" required>
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subcategory</label>
+                        <select id="productSubcategory">
+                            <option value="">None</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (Rs.) *</label>
+                        <input type="number" id="productPrice" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stock Quantity *</label>
+                        <input type="number" id="productStock" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Image URL</label>
+                        <input type="text" id="productImage" placeholder="https://...">
+                    </div>
+                </div>
+
+                <!-- IMAGE UPLOAD SECTION -->
+                <div class="form-group">
+                    <label>Upload Image <span class="label-hint">(replaces URL above)</span></label>
+                    <div class="upload-row">
+                        <div class="file-picker">
+                            <button type="button" id="selectFileBtn" class="choose-file-btn">Choose File</button>
+                            <span id="fileNameDisplay" class="file-name-display">No file chosen</span>
+                            <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
+                        </div>
+                        <button type="button" id="uploadFileBtn" class="upload-btn">Upload</button>
+                    </div>
+                    <div id="uploadStatus" class="upload-status"></div>
+                    <div id="imagePreview" class="image-preview"></div>
+                    <button type="button" id="removeImageBtn" class="remove-image-btn" style="display:none;">✕ Remove image</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Material</label>
+                        <input type="text" id="productMaterial" placeholder="e.g., Stone, Brass">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Size</label>
+                        <input type="text" id="productSize" placeholder="e.g., 12 inches">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Artisan Name</label>
+                    <input type="text" id="productArtisan">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MESSAGE DETAIL MODAL -->
+    <div id="messageModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Message Details</h3>
+                <button class="close-modal" id="closeMessageModal">&times;</button>
+            </div>
+            
+            <div id="messageDetailContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let token = localStorage.getItem('sururo_admin_token') || '';
+        let categories = [];
+        let products = [];
+        let messages = [];
+        let editingProductId = null;
+
+        // DOM Elements
+        const loginSection = document.getElementById('loginSection');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('loginForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const productModal = document.getElementById('productModal');
+        const messageModal = document.getElementById('messageModal');
+        const closeModal = document.getElementById('closeModal');
+        const closeMessageModal = document.getElementById('closeMessageModal');
+        const productForm = document.getElementById('productForm');
+        const addProductBtn = document.getElementById('addProductBtn');
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                const tabId = btn.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+                if (tabId === 'messages') loadMessages();
+                if (tabId === 'orders') loadOrders();
+            });
+        });
+
+        // Initialize
+        function init() {
+            if (token) {
+                showDashboard();
+                loadCategories();
+                loadProducts();
+            } else {
+                showLoginForm();
+            }
+        }
+
+        // Show/Hide
+        function showLoginForm() {
+            loginSection.style.display = 'block';
+            dashboard.classList.remove('active');
+        }
+
+        function showDashboard() {
+            loginSection.style.display = 'none';
+            dashboard.classList.add('active');
+        }
+
+        // Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
+
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+
+            try {
+                const res = await fetch(`${API_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    token = data.token;
+                    localStorage.setItem('sururo_admin_token', token);
+                    showDashboard();
+                    loadCategories();
+                    loadProducts();
+                } else {
+                    showMessage('Invalid credentials', 'error', 'loginMessage');
+                }
+            } catch (error) {
+                showMessage('Login failed: ' + error.message, 'error', 'loginMessage');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Login';
+            }
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            token = '';
+            localStorage.removeItem('sururo_admin_token');
+            loginForm.reset();
+            showLoginForm();
+        });
+
+        // Load Categories
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${API_URL}/categories`);
+                if (res.ok) {
+                    categories = await res.json();
+                    const select = document.getElementById('productCategory');
+                    select.innerHTML = '<option value="">Select Category</option>';
+                    categories.forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat.id;
+                        opt.textContent = cat.name;
+                        select.appendChild(opt);
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+            }
+        }
+
+        // Subcategories shown on the storefront's Statues mega-menu (App.jsx STATUES_SUBMENU)
+        const STATUES_SUBCATEGORIES = [
+            'Shakyamuni Buddha', 'Medicine Buddha', 'Blessing Buddha', 'Amitabha Buddha', 'Sleeping Buddha', 'Fasting Buddha',
+            'Green Tara', 'White Tara', 'Guru Rinpoche', 'Manjushri', 'Chenrezig', 'Vajrasattva',
+            'Shiva', 'Nataraja Shiva', 'Ganesh', 'Naag Kanya',
+            'Wall Masks'
+        ];
+
+        function updateSubcategoryOptions() {
+            const categorySelect = document.getElementById('productCategory');
+            const subSelect = document.getElementById('productSubcategory');
+            const selectedCat = categories.find(c => c.id == categorySelect.value);
+            const currentValue = subSelect.value;
+
+            subSelect.innerHTML = '<option value="">None</option>';
+
+            if (selectedCat && (selectedCat.name === 'Statues' || selectedCat.name === 'Buddhist Statues')) {
+                STATUES_SUBCATEGORIES.forEach(name => {
+                    const opt = document.createElement('option');
+                    opt.value = name;
+                    opt.textContent = name;
+                    subSelect.appendChild(opt);
+                });
+                subSelect.disabled = false;
+            } else {
+                subSelect.disabled = false;
+            }
+
+            if ([...subSelect.options].some(o => o.value === currentValue)) {
+                subSelect.value = currentValue;
+            }
+        }
+
+        document.getElementById('productCategory').addEventListener('change', updateSubcategoryOptions);
+
+        // Load Products
+        async function loadProducts() {
+            document.getElementById('productsLoading').style.display = 'block';
+            document.getElementById('productsTable').style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_URL}/products`);
+                if (res.ok) {
+                    products = await res.json();
+                    renderProducts();
+                }
+            } catch (error) {
+                showMessage('Failed to load products: ' + error.message, 'error', 'dashMessage');
+            } finally {
+                document.getElementById('productsLoading').style.display = 'none';
+            }
+        }
+
+        // Load Messages
+        async function loadMessages() {
+            document.getElementById('messagesLoading').style.display = 'block';
+            document.getElementById('messagesTable').style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_URL}/admin/messages`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    messages = await res.json();
+                    renderMessages();
+                }
+            } catch (error) {
+                console.error('Failed to load messages:', error);
+            } finally {
+                document.getElementById('messagesLoading').style.display = 'none';
+            }
+        }
+
+        // Render Products
+        function renderProducts() {
+            const tbody = document.getElementById('productsBody');
+            tbody.innerHTML = '';
+
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${product.image_url || 'https://via.placeholder.com/50'}" alt="${product.name}" class="table-img"></td>
+                    <td>${product.name}</td>
+                    <td>${categories.find(c => c.id == product.category_id)?.name || '—'}</td>
+                    <td>Rs. ${Number(product.price).toLocaleString()}</td>
+                    <td>${product.stock_quantity}</td>
+                    <td>
+                        <button class="btn-small btn-edit" onclick="editProduct('${product.id}')">Edit</button>
+                        <button class="btn-small btn-delete" onclick="deleteProduct('${product.id}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('productsTable').style.display = 'table';
+        }
+
+        // Render Messages
+        function renderMessages() {
+            const tbody = document.getElementById('messagesBody');
+            tbody.innerHTML = '';
+
+            messages.forEach(msg => {
+                const row = document.createElement('tr');
+                const isRead = msg.is_read;
+                const badge = isRead ? '<span class="badge-read">Read</span>' : '<span class="badge-unread">Unread</span>';
+                const date = new Date(msg.created_at).toLocaleDateString();
+                
+                row.innerHTML = `
+                    <td><strong>${msg.name}</strong></td>
+                    <td>${msg.email}</td>
+                    <td>${msg.subject || 'No Subject'}</td>
+                    <td>${badge}</td>
+                    <td>${date}</td>
+                    <td>
+                        <button class="btn-small btn-edit" onclick="viewMessage('${msg.id}', '${msg.name}', '${msg.email}', '${msg.subject || ''}', '${msg.message.replace(/'/g, "\\'")}')">View</button>
+                        <button class="btn-small btn-delete" onclick="deleteMessage('${msg.id}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('messagesTable').style.display = 'table';
+        }
+
+        // View Message
+        window.viewMessage = function(id, name, email, subject, message) {
+            const content = document.getElementById('messageDetailContent');
+            content.innerHTML = `
+                <div class="message-detail">
+                    <h4>From: ${name}</h4>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Subject:</strong> ${subject || 'No Subject'}</p>
+                    <hr style="margin: 15px 0; border: none; border-top: 1px solid #ddd;">
+                    <h4>Message:</h4>
+                    <p style="white-space: pre-wrap;">${message}</p>
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn-primary" onclick="markAsRead('${id}')">✓ Mark as Read</button>
+                        <button class="btn-small btn-delete" onclick="deleteMessage('${id}')">🗑 Delete</button>
+                    </div>
+                </div>
+            `;
+            messageModal.classList.add('active');
+        };
+
+        // Mark as Read
+        window.markAsRead = async function(id) {
+            try {
+                await fetch(`${API_URL}/admin/messages/${id}/read`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                messageModal.classList.remove('active');
+                loadMessages();
+                showMessage('Message marked as read!', 'success', 'dashMessage');
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error', 'dashMessage');
+            }
+        };
+
+        // Delete Message
+        window.deleteMessage = async function(id) {
+            if (!confirm('Delete this message?')) return;
+
+            try {
+                const res = await fetch(`${API_URL}/admin/messages/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    showMessage('Message deleted!', 'success', 'dashMessage');
+                    messageModal.classList.remove('active');
+                    loadMessages();
+                } else {
+                    showMessage('Failed to delete message', 'error', 'dashMessage');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error', 'dashMessage');
+            }
+        };
+
+        // Add Product Button
+        addProductBtn.addEventListener('click', () => {
+            editingProductId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Product';
+            productForm.reset();
+            document.getElementById('formMessage').innerHTML = '';
+            document.getElementById('uploadStatus').textContent = '';
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('imageFileInput').value = '';
+            document.getElementById('fileNameDisplay').textContent = 'No file chosen';
+            document.getElementById('removeImageBtn').style.display = 'none';
+            productModal.classList.add('active');
+        });
+
+        // Image Upload Handler
+        const selectFileBtn = document.getElementById('selectFileBtn');
+        const imageFileInput = document.getElementById('imageFileInput');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const uploadFileBtn = document.getElementById('uploadFileBtn');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const imagePreview = document.getElementById('imagePreview');
+        const productImageUrlInput = document.getElementById('productImage');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+
+        function clearImagePreview() {
+            imagePreview.innerHTML = '';
+            productImageUrlInput.value = '';
+            imageFileInput.value = '';
+            fileNameDisplay.textContent = 'No file chosen';
+            uploadStatus.textContent = '';
+            removeImageBtn.style.display = 'none';
+        }
+
+        if (removeImageBtn) {
+            removeImageBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                clearImagePreview();
+            });
+        }
+
+        if (selectFileBtn) {
+            selectFileBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                imageFileInput.click();
+            });
+        }
+
+        if (imageFileInput) {
+            imageFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                uploadStatus.textContent = '';
+                if (!file) {
+                    fileNameDisplay.textContent = 'No file chosen';
+                    return;
+                }
+                fileNameDisplay.textContent = file.name;
+            });
+        }
+
+        if (uploadFileBtn) {
+            uploadFileBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const file = imageFileInput.files[0];
+                if (!file) {
+                    uploadStatus.textContent = '❌ Please choose a file first';
+                    uploadStatus.style.color = '#e74c3c';
+                    return;
+                }
+
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    uploadStatus.textContent = '❌ Please select an image file';
+                    uploadStatus.style.color = '#e74c3c';
+                    return;
+                }
+
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    uploadStatus.textContent = '❌ File size must be less than 5MB';
+                    uploadStatus.style.color = '#e74c3c';
+                    return;
+                }
+
+                uploadFileBtn.disabled = true;
+                uploadStatus.textContent = '⏳ Uploading...';
+                uploadStatus.style.color = '#666';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const res = await fetch(`${API_URL}/admin/upload`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        const imageUrl = data.image_url;
+
+                        // Auto-populate the URL field
+                        productImageUrlInput.value = imageUrl;
+
+                        // Show preview (with fallback if the image fails to load)
+                        imagePreview.innerHTML = `<img src="${imageUrl}" alt="Preview" onerror="this.replaceWith(Object.assign(document.createElement('div'), {className: 'preview-error', textContent: '⚠️ Image uploaded but could not be displayed. Check it opens here: ' + '${imageUrl}'}))">`;
+                        uploadStatus.textContent = '✅ Image uploaded successfully!';
+                        uploadStatus.style.color = '#27ae60';
+                        removeImageBtn.style.display = 'inline-block';
+                    } else {
+                        const error = await res.json();
+                        uploadStatus.textContent = `❌ ${error.error || 'Upload failed'}`;
+                        uploadStatus.style.color = '#e74c3c';
+                    }
+                } catch (error) {
+                    uploadStatus.textContent = `❌ Error: ${error.message}`;
+                    uploadStatus.style.color = '#e74c3c';
+                } finally {
+                    uploadFileBtn.disabled = false;
+                }
+            });
+        }
+
+        // Edit Product
+        window.editProduct = function(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            editingProductId = id;
+            document.getElementById('modalTitle').textContent = 'Edit Product';
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productDescription').value = product.description || '';
+            document.getElementById('productCategory').value = product.category_id;
+            updateSubcategoryOptions();
+            document.getElementById('productSubcategory').value = product.subcategory || '';
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productStock').value = product.stock_quantity;
+            document.getElementById('productImage').value = product.image_url || '';
+            document.getElementById('productMaterial').value = product.material || '';
+            document.getElementById('productSize').value = product.size || '';
+            document.getElementById('productArtisan').value = product.artisan_name || '';
+            document.getElementById('uploadStatus').textContent = '';
+            document.getElementById('imageFileInput').value = '';
+            document.getElementById('fileNameDisplay').textContent = 'No file chosen';
+
+            // Show image preview if exists
+            if (product.image_url) {
+                imagePreview.innerHTML = `<img src="${product.image_url}" alt="Preview">`;
+                removeImageBtn.style.display = 'inline-block';
+            } else {
+                imagePreview.innerHTML = '';
+                removeImageBtn.style.display = 'none';
+            }
+
+            productModal.classList.add('active');
+        };
+
+        // Delete Product
+        window.deleteProduct = async function(id) {
+            if (!confirm('Are you sure?')) return;
+
+            try {
+                const res = await fetch(`${API_URL}/admin/products/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    showMessage('Product deleted!', 'success', 'dashMessage');
+                    loadProducts();
+                } else {
+                    showMessage('Failed to delete product', 'error', 'dashMessage');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error', 'dashMessage');
+            }
+        };
+
+        // Submit Form
+        productForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+
+            const data = {
+                name: document.getElementById('productName').value,
+                description: document.getElementById('productDescription').value,
+                category_id: document.getElementById('productCategory').value,
+                subcategory: document.getElementById('productSubcategory').value || null,
+                price: parseFloat(document.getElementById('productPrice').value),
+                stock_quantity: parseInt(document.getElementById('productStock').value),
+                image_url: document.getElementById('productImage').value,
+                material: document.getElementById('productMaterial').value,
+                size: document.getElementById('productSize').value,
+                artisan_name: document.getElementById('productArtisan').value
+            };
+
+            btn.disabled = true;
+            btn.textContent = editingProductId ? 'Updating...' : 'Creating...';
+
+            try {
+                const url = editingProductId
+                    ? `${API_URL}/admin/products/${editingProductId}`
+                    : `${API_URL}/admin/products`;
+
+                const method = editingProductId ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    showMessage(editingProductId ? 'Product updated!' : 'Product created!', 'success', 'formMessage');
+                    setTimeout(() => {
+                        productModal.classList.remove('active');
+                        loadProducts();
+                    }, 1500);
+                } else {
+                    showMessage('Failed to save product', 'error', 'formMessage');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error', 'formMessage');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = editingProductId ? 'Update Product' : 'Create Product';
+            }
+        });
+
+        // Close Modals
+        closeModal.addEventListener('click', () => {
+            productModal.classList.remove('active');
+        });
+
+        closeMessageModal.addEventListener('click', () => {
+            messageModal.classList.remove('active');
+        });
+
+        productModal.addEventListener('click', (e) => {
+            if (e.target === productModal) {
+                productModal.classList.remove('active');
+            }
+        });
+
+        messageModal.addEventListener('click', (e) => {
+            if (e.target === messageModal) {
+                messageModal.classList.remove('active');
+            }
+        });
+
+        // Show Message
+        function showMessage(msg, type, elementId) {
+            const el = document.getElementById(elementId);
+            el.textContent = msg;
+            el.className = `message active ${type}`;
+            setTimeout(() => {
+                el.classList.remove('active');
+            }, 4000);
+        }
+
+        // Load Orders
+        async function loadOrders() {
+            document.getElementById('ordersLoading').style.display = 'block';
+            document.getElementById('ordersTable').style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_URL}/admin/orders`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const orders = await res.json();
+                    renderOrders(orders);
+                } else {
+                    showMessage('Failed to load orders', 'error', 'dashMessage');
+                }
+            } catch (error) {
+                showMessage('Error loading orders: ' + error.message, 'error', 'dashMessage');
+            } finally {
+                document.getElementById('ordersLoading').style.display = 'none';
+            }
+        }
+
+        // Render Orders
+        function renderOrders(orders) {
+            const tbody = document.getElementById('ordersBody');
+            tbody.innerHTML = '';
+
+            if (!orders.length) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#999;padding:30px;">No orders yet.</td></tr>';
+                document.getElementById('ordersTable').style.display = 'table';
+                return;
+            }
+
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                const date = new Date(order.created_at).toLocaleDateString();
+                const itemCount = Array.isArray(order.items) ? order.items.length : '—';
+                const statusColor = order.status === 'pending' ? '#e67e22' : order.status === 'completed' ? '#27ae60' : '#95a5a6';
+                row.innerHTML = `
+                    <td><strong>${order.customer_name || '—'}</strong></td>
+                    <td>${order.customer_email || '—'}</td>
+                    <td>${order.phone || '—'}</td>
+                    <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
+                    <td>Rs. ${Number(order.total_amount || 0).toLocaleString()}</td>
+                    <td><span style="background:${statusColor};color:white;padding:3px 8px;border-radius:3px;font-size:12px;">${order.status || 'pending'}</span></td>
+                    <td>${date}</td>
+                    <td>
+                        <button class="btn-small btn-edit" onclick="viewOrder('${order.id}')">View</button>
+                        ${order.status !== 'completed' ? `<button class="btn-small btn-complete" onclick="completeOrder('${order.id}')">✓ Complete</button>` : '<span style="color:#27ae60;font-weight:600;font-size:12px;">✓ Completed</span>'}
+                        <button class="btn-small btn-delete" onclick="deleteOrder('${order.id}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('ordersTable').style.display = 'table';
+        }
+
+        // View Order
+        window.viewOrder = async function(id) {
+            try {
+                const res = await fetch(`${API_URL}/admin/orders/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Not found');
+                const order = await res.json();
+                const items = Array.isArray(order.items) ? order.items : [];
+                const itemsHtml = items.map(i =>
+                    `<li>${i.name || i.product_id} ×${i.quantity || 1} — Rs. ${Number(i.price || 0).toLocaleString()}</li>`
+                ).join('');
+                const content = document.getElementById('messageDetailContent');
+                content.innerHTML = `
+                    <div class="message-detail">
+                        <h4>Order from ${order.customer_name}</h4>
+                        <p><strong>Email:</strong> ${order.customer_email}</p>
+                        <p><strong>Phone:</strong> ${order.phone || '—'}</p>
+                        <p><strong>Total:</strong> Rs. ${Number(order.total_amount || 0).toLocaleString()}</p>
+                        <p><strong>Status:</strong> ${order.status || 'pending'}</p>
+                        <hr style="margin:15px 0;border:none;border-top:1px solid #ddd;">
+                        <h4>Items:</h4>
+                        <ul style="padding-left:20px;line-height:2">${itemsHtml || '<li>No item details</li>'}</ul>
+                        ${order.shipping_data ? `
+                        <hr style="margin:15px 0;border:none;border-top:1px solid #ddd;">
+                        <h4>Shipping:</h4>
+                        <p>${order.shipping_data.address}, ${order.shipping_data.city}, ${order.shipping_data.postal_code}, ${order.shipping_data.country}</p>
+                        ` : ''}
+                    </div>
+                `;
+                messageModal.classList.add('active');
+            } catch (error) {
+                showMessage('Failed to load order: ' + error.message, 'error', 'dashMessage');
+            }
+        };
+
+        // Complete Order
+        window.completeOrder = async function(id) {
+            try {
+                const res = await fetch(`${API_URL}/admin/orders/${id}/complete`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    showMessage('Order marked as completed!', 'success', 'dashMessage');
+                    loadOrders();
+                } else {
+                    showMessage('Failed to update order', 'error', 'dashMessage');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error', 'dashMessage');
+            }
+        };
+
+        // Delete Order
+        window.deleteOrder = async function(id) {
+            if (!confirm('Delete this order?')) return;
+            try {
+                const res = await fetch(`${API_URL}/admin/orders/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    showMessage('Order deleted!', 'success', 'dashMessage');
+                    loadOrders();
+                } else {
+                    showMessage('Failed to delete order', 'error', 'dashMessage');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error', 'dashMessage');
+            }
+        };
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
