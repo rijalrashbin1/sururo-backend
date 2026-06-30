@@ -11,6 +11,8 @@ const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 dotenv.config();
 
@@ -20,27 +22,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Uploads folder
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-app.use('/uploads', express.static(uploadsDir));
+// Cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dicqqfvts',
+  api_key: process.env.CLOUDINARY_API_KEY || '791147664141436',
+  api_secret: process.env.CLOUDINARY_API_SECRET || '91WiJfUDjXIPjDw8DUswrWKxgSE'
+});
 
-// Multer config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `product-${Date.now()}${ext}`);
+// Multer + Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'sururo-products',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp']
   }
 });
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) cb(null, true);
-    else cb(new Error('Images only!'));
-  }
-});
+const upload = multer({ storage });
 
 // Database connection
 const pool = new Pool({
@@ -280,7 +277,7 @@ const adminAuth = (req, res, next) => {
 
 app.post("/api/admin/upload", adminAuth, upload.single("image"), (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-  const imageUrl = `http://localhost:${process.env.PORT || 5000}/uploads/${req.file.filename}`;
+  const imageUrl = req.file.path;
   res.json({ image_url: imageUrl });
 });
 
